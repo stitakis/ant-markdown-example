@@ -1,0 +1,141 @@
+<project name="MyProject">
+
+    <target name="ant-markdown-j7">
+
+        <fail message="Unsupported Java version: ${ant.java.version}.
+            This task only works with 1.7">
+            <condition>
+                <not>
+                    <equals arg1="${ant.java.version}" arg2="1.7"/>
+                </not>
+            </condition>
+        </fail>
+
+        <property name="fs.dir" value="."/>
+        <property name="md.file" value="README.md"/>
+        <property name="html.file" value="README-gen-J7.html"/>
+        <!--<property name="fs.includes" value="**/*.txt"/>-->
+        <!--<property name="fs.excludes" value="**/*.tmp"/>-->
+        <!--<property name="style" value="<!DOCTYPE HTML><HEAD><link rel=\"stylesheet\" href=\"github.css\"></HEAD>"-->
+
+
+        <path id="cp">
+            <fileset dir="./libs">
+                <include name="markdown*.jar" />
+            </fileset>
+        </path>
+
+        <script language="javascript" classpathref="cp"> <![CDATA[
+            importClass(java.io.File);
+            importClass(java.io.BufferedWriter);
+            importClass(java.io.FileWriter);
+            importClass(java.io.File);
+            importClass(org.markdown4j.Markdown4jProcessor);
+
+            var dir = project.getProperty("fs.dir");
+            fs = project.createDataType("fileset");
+            fs.setDir( new File(dir) );
+
+            var basedir  = fs.getDir(project);
+            var filename = project.getProperty("md.file");
+            var inFile = new File(basedir, filename);
+
+            echo = MyProject.createTask("echo");
+            echo.setMessage(inFile);
+            echo.perform();
+
+            var output = project.getProperty("html.file");
+            var outFile = new File(basedir, output);
+            echo.setMessage(outFile);
+            echo.perform();
+
+            var head = "<!DOCTYPE HTML><HEAD><link rel=\"stylesheet\" href=\"github.css\"></HEAD>";
+
+            var processor = new Markdown4jProcessor();
+            var genHtml = processor.process(inFile)
+            var html = head + "<body>" + genHtml + "</body>" ;
+            echo.setMessage(html);
+            echo.perform();
+
+            var fw = new FileWriter(outFile);
+            var bw = new BufferedWriter(fw);
+            bw.write(html);
+            bw.close();
+            echo.setMessage("Done!");
+            echo.perform();
+
+
+    ]]> </script>
+
+    </target>
+
+
+    <target name="ant-markdown-j8">
+
+        <fail message="Unsupported Java version: ${ant.java.version}.
+            This task only works with 1.8">
+            <condition>
+                <not>
+                    <equals arg1="${ant.java.version}" arg2="1.8"/>
+                </not>
+            </condition>
+        </fail>
+
+        <property name="fs.dir" value="."/>
+        <property name="md.file" value="README.md"/>
+        <property name="html.file" value="README-gen-J8.html"/>
+
+        <path id="cp">
+            <fileset dir="./libs">
+                <include name="markdown*.jar" />
+            </fileset>
+        </path>
+
+        <script language="javascript" classpathref="cp"> <![CDATA[
+            var File = java.io.File;
+            var BufferedWriter = java.io.BufferedWriter;
+            var FileWriter = java.io.FileWriter;
+            var File = java.io.File;
+            var Markdown4jProcessor = new org.markdown4j.Markdown4jProcessor;
+
+            var dir = project.getProperty("fs.dir");
+            fs = project.createDataType("fileset");
+            fs.setDir( new File(dir) );
+
+            var basedir  = fs.getDir(project);
+            var filename = project.getProperty("md.file");
+            var inFile = new File(basedir, filename);
+
+            echo = MyProject.createTask("echo");
+            echo.setMessage(inFile);
+            echo.perform();
+
+            var output = project.getProperty("html.file");
+            var outFile = new File(basedir, output);
+            echo.setMessage(outFile);
+            echo.perform();
+
+            var head = "<!DOCTYPE HTML><HEAD><link rel=\"stylesheet\" href=\"github.css\"></HEAD>";
+
+            var processor = Markdown4jProcessor;
+            var genHtml = processor.process(inFile)
+            var html = head + "<body>" + genHtml + "</body>" ;
+            echo.setMessage(html);
+            echo.perform();
+
+            var fw = new FileWriter(outFile);
+            var bw = new BufferedWriter(fw);
+            bw.write(html);
+            bw.close();
+            echo.setMessage("Done!");
+            echo.perform();
+
+
+    ]]> </script>
+
+    </target>
+
+
+</project>
+
+
